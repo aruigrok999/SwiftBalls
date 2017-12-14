@@ -51,4 +51,16 @@ class SKBBEndpoint: SKBBShapeNode {
         }
     }
 
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        
+        if let safeLine = line {
+            if safeLine.size.width < 12 {
+                for endPoint in safeLine.endPoints {
+                    endPoint.removeFromParent()
+                }
+                line?.removeFromParent()
+            }
+        }
+    }
 }

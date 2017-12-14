@@ -50,14 +50,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private let numberOfNotes = 17
     private var source: SKShapeNode
-    private var hitNode: SKNode?
     
     required init?(coder aDecoder: NSCoder)
     {
         soundIDs = Array<SystemSoundID>(repeating: 0, count: numberOfNotes)
         
         let w = 24
-        self.source = SKBBShapeNode.init(ellipseOf: CGSize(width: w, height: w))
+        source = SKBBShapeNode.init(ellipseOf: CGSize(width: w, height: w))
         source.position = CGPoint(x: 0, y: 0)
         source.lineWidth = 2.5
         source.strokeColor = .green
@@ -99,20 +98,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            hitNode = self.atPoint(touch.location(in: self))
+            let hitNodes = self.nodes(at: touch.location(in: self))
             
-            if hitNode as? SKShapeNode == nil && hitNode as? SKBBBall == nil {
+            if hitNodes.count == 0 {
 
-                    let startPoint = createEndpoint(location:touch.location(in: self))
-                    newStartPoint = startPoint
-                    let endPoint = createEndpoint(location:touch.location(in: self))
-                    newEndPoint = endPoint
-                    let newLine = SKBBLine()
-                    startPoint.line = newLine
-                    endPoint.line = newLine
-                    newLine.endPoints = [startPoint, endPoint]
-                    addChild(newLine)
-                    hitNode = newEndPoint
+                let startPoint = createEndpoint(location:touch.location(in: self))
+                newStartPoint = startPoint
+                let endPoint = createEndpoint(location:touch.location(in: self))
+                newEndPoint = endPoint
+                let newLine = SKBBLine()
+                startPoint.line = newLine
+                endPoint.line = newLine
+                newLine.endPoints = [startPoint, endPoint]
+                addChild(newLine)
+                addChild(startPoint)
+                addChild(endPoint)
             }
         }
     }
@@ -177,7 +177,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createEndpoint(location: CGPoint) -> SKBBEndpoint {
-        let w = 10
+        let w = 6
         let endPoint = SKBBEndpoint.init(ellipseOf: CGSize(width: w*2, height: w*2))
         endPoint.position = location
         endPoint.strokeColor = .clear
@@ -189,7 +189,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         dot.fillColor = .blue
         dot.isUserInteractionEnabled = false
         endPoint.addChild(dot)
-        self.addChild(endPoint)
         
         return endPoint
     }
