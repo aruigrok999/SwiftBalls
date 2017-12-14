@@ -71,6 +71,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.contactDelegate = self
 
         self.backgroundColor = SKColor(red: 125/255, green: 110/255, blue: 1, alpha: 1)
+
+        for i in 0..<numberOfNotes
+        {
+            let soundURL = Bundle.main.url(forResource: "Note" + String(i+1), withExtension: "caf")
+            if let safeSoundURL = soundURL
+            {
+                var systemSoundID: SystemSoundID = 0;
+                AudioServicesCreateSystemSoundID(safeSoundURL as CFURL, &systemSoundID)
+                self.soundIDs[i] = systemSoundID
+            }
+        }
     }
 
     override func didMove(to view: SKView) {
@@ -182,5 +193,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         return endPoint
     }
+    
+    func didBegin(_ contact: SKPhysicsContact)
+    {
+        var line = contact.bodyA.node as? SKBBLine
+        if (line == nil)
+        {
+            line = contact.bodyB.node as? SKBBLine
+        }
+        if let safeLine = line {
+            let width = safeLine.size.width
+            var index = 16 - Int(width) / 30    // Notes are 0-16, with 0 being the lowest note for lines over 500
+            if index < 0 { index = 0 }
+            
+            AudioServicesPlaySystemSound(soundIDs[index]);
+        }
+    }
+
     
 }
