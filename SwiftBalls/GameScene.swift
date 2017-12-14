@@ -61,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         source.position = CGPoint(x: 0, y: 0)
         source.lineWidth = 2.5
         source.strokeColor = .green
+        source.isUserInteractionEnabled = true
         
         super.init(coder: aDecoder)
 
@@ -89,8 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let touch = touches.first {
             hitNode = self.atPoint(touch.location(in: self))
             
-            let hitShapeNode = hitNode as? SKShapeNode
-            if hitShapeNode == nil {
+            if hitNode as? SKShapeNode == nil && hitNode as? SKBBBall == nil {
 
                     let startPoint = createEndpoint(location:touch.location(in: self))
                     newStartPoint = startPoint
@@ -108,55 +108,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            updateForTouch(touch)
-        }
-    }
-    
-    func updateForTouch(_ touch: UITouch) {
-        
-        if let nodeActuallyHit = hitNode {
-            let location = touch.location(in: self)
-            let previousLocation = touch.previousLocation(in: self)
-            nodeActuallyHit.position = CGPoint(x: nodeActuallyHit.position.x + location.x - previousLocation.x,
-                                               y: nodeActuallyHit.position.y + location.y - previousLocation.y)
-        }
-        
-        if let endPoint = hitNode as? SKBBEndpoint, let startPoint = newStartPoint {
-            let run = startPoint.position.x - endPoint.position.x
-            let rise = startPoint.position.y - endPoint.position.y
-            let lineLength = CGFloat(sqrtf(Float(run*run+rise*rise)))
-            let size = CGSize(width:lineLength, height:2)
-            if let line = startPoint.line {
-                line.size = size
-                line.position = CGPoint(x:(startPoint.position.x + endPoint.position.x) / 2 , y:(startPoint.position.y + endPoint.position.y) / 2 )
-                line.zRotation = CGFloat(atanf(Float(rise/run)))
-                line.color = .blue
-                if lineLength < 10 {
-                    line.physicsBody = nil
-                    return
-                }
-                let block = SKPhysicsBody(rectangleOf:size)
-                line.physicsBody = block
-                block.isDynamic = false
-                block.affectedByGravity = false
-                block.restitution = 1.2
-                block.friction = 0.6
-                block.contactTestBitMask = 1
-                block.categoryBitMask = 2
-            }
+            newEndPoint?.updateForTouch(touch)
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            updateForTouch(touch)
+            newEndPoint?.updateForTouch(touch)
+            newEndPoint = nil;
         }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            updateForTouch(touch)
+            newEndPoint?.updateForTouch(touch)
         }
+        newEndPoint = nil;
     }
     
     

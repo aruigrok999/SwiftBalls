@@ -10,6 +10,10 @@ import SpriteKit
 
 class SKBBShapeNode: SKShapeNode {
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //print("Hit BBShapeNode")
+    }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             updateForTouch(touch)
@@ -17,6 +21,12 @@ class SKBBShapeNode: SKShapeNode {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            updateForTouch(touch)
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             updateForTouch(touch)
         }
