@@ -7,3 +7,7 @@ Drag the endpoints of the line to move them. Make them very small to delete them
 
 Responds to the orientation and accelerometer on the iPhone and iPad.
 Note that the volume of the notes is controlled by ringer volume.
+
+This is the first of many projects I plan to publish to the App Store to show my technical ability.
+
+https://www.linkedin.com/in/aruigrok/
