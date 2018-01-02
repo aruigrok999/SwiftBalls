@@ -1,0 +1,13 @@
+Ideas:
+Let source be obstacle
+Let the user add more than lines
+Let the user pick a note for random shapes, or do it based on size
+Let the user draw shapes with the pencil
+Make the source look like a chute
+
+Bugs:
+Add an icon
+We should keep the canvas the same size on rotation; Probably don't rotate the canvas, just the UI
+Pause before it starts dropping so it looks like it rolls out of the source
+
+
