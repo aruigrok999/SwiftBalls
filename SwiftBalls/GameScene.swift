@@ -215,18 +215,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let accelerometerData = motionManager.accelerometerData {
             var acceleration = accelerometerData.acceleration
             switch orientation {
-            case .portrait:
-                acceleration.x = accelerometerData.acceleration.y
+            case .landscapeLeft:
+                acceleration.x = -accelerometerData.acceleration.y
                 acceleration.y = accelerometerData.acceleration.x
+                acceleration.z = 0
+            case .landscapeRight:
+                acceleration.x = accelerometerData.acceleration.y
+                acceleration.y = -accelerometerData.acceleration.x
+                acceleration.z = 0
             default:
-                acceleration.x = accelerometerData.acceleration.x
-                acceleration.y = -accelerometerData.acceleration.y
+                acceleration = accelerometerData.acceleration
             }
-            if (acceleration.y * acceleration.y + acceleration.x * acceleration.x) < 0.01 { // make sure we have some acceleration
-                acceleration.x = -0.1
+            if acceleration.y < 0.01 && acceleration.x < 0.01 { // make sure we have some acceleration
+                acceleration.y = -0.1
             }
             
-            physicsWorld.gravity = CGVector(dx: acceleration.y * 9.8, dy: acceleration.x * 9.8)
+            physicsWorld.gravity = CGVector(dx: acceleration.x * 9.8, dy: acceleration.y * 9.8)
         }
     }
     
